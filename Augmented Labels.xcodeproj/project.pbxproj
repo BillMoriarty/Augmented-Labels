@@ -12,6 +12,7 @@
 		136A0F4E28B4499700A50369 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 136A0F4D28B4499700A50369 /* Assets.xcassets */; };
 		136A0F5128B4499700A50369 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 136A0F5028B4499700A50369 /* Preview Assets.xcassets */; };
 		136A0F5828B44CA500A50369 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 136A0F5728B44CA500A50369 /* Resnet50.mlmodel */; };
+		13D624B828D937480043BCD1 /* YOLOv3TinyFP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 13D624B728D937480043BCD1 /* YOLOv3TinyFP16.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		136A0F4D28B4499700A50369 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		136A0F5028B4499700A50369 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		136A0F5728B44CA500A50369 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
+		13D624B728D937480043BCD1 /* YOLOv3TinyFP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3TinyFP16.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				136A0F5728B44CA500A50369 /* Resnet50.mlmodel */,
+				13D624B728D937480043BCD1 /* YOLOv3TinyFP16.mlmodel */,
 				136A0F4728B4499400A50369 /* AppDelegate.swift */,
 				136A0F4928B4499400A50369 /* ContentView.swift */,
 				136A0F4D28B4499700A50369 /* Assets.xcassets */,
@@ -143,6 +146,7 @@
 				136A0F4A28B4499400A50369 /* ContentView.swift in Sources */,
 				136A0F4828B4499400A50369 /* AppDelegate.swift in Sources */,
 				136A0F5828B44CA500A50369 /* Resnet50.mlmodel in Sources */,
+				13D624B828D937480043BCD1 /* YOLOv3TinyFP16.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

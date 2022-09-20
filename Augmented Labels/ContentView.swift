@@ -21,8 +21,9 @@ class ModelRecognizer: ObservableObject {
     @Published var aView = ARView()
     @Published var recognizedObject = "nothing yet"
     
-    // using ! because the model is required and it is in my XCode project
-    @Published var model = try! VNCoreMLModel(for: Resnet50().model) //Resnet50().model)
+    // instantiate the core ML model
+    // I am using ! here because the model is required for this
+    @Published var model  = try! VNCoreMLModel(for: YOLOv3TinyFP16().model)
     
     // call the continuouslyUpdate function every half second
     var timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { _ in
@@ -32,7 +33,6 @@ class ModelRecognizer: ObservableObject {
     func setRecognizedObject(newThing: String){
         recognizedObject = newThing
     }
-    
 }
 
 struct ContentView : View {
@@ -52,7 +52,6 @@ struct WrappingView: View {
     }
 }
 
-
 struct ARViewContainer: UIViewRepresentable {
     
     @ObservedObject var recogd: ModelRecognizer = .shared
@@ -60,14 +59,13 @@ struct ARViewContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> ARView {
         let v = recogd.aView
         return v
-        
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {
         var txt = SCNText()
         
-        // let's keep the number of anchors to no more than 5 just so the screen doesn't get cluttered
-        if recogd.aView.scene.anchors.count > 5 {
+        // let's keep the number of anchors to no more than 3 for this demo just so the screen doesn't get cluttered
+        if recogd.aView.scene.anchors.count > 3 {
             recogd.aView.scene.anchors.remove(at: 0)
         }
         
@@ -92,8 +90,8 @@ struct ARViewContainer: UIViewRepresentable {
         let transform = recogd.aView.cameraTransform
         
         // set the transform (the 3d location) of the text to be near the center of the camer, and 1 meter away
-        let trans2 = simd_float4x4(transform.matrix)
-        let anchEntity = AnchorEntity(world: trans2)
+        let trans = simd_float4x4(transform.matrix)
+        let anchEntity = AnchorEntity(world: trans)
         textEntity.position.z -= 1.0
         
         anchEntity.addChild(textEntity)
@@ -101,7 +99,6 @@ struct ARViewContainer: UIViewRepresentable {
         // add this anchor entity to the scene
         recogd.aView.scene.addAnchor(anchEntity)
     }
-    
 }
 
 func generateRandomColor() -> UIColor {
@@ -126,19 +123,23 @@ func continuouslyUpdate() {
     // access the current frame as an image
     let tempImage: CVPixelBuffer? = sess.currentFrame?.capturedImage
     
-    var firstResult = String ("")
-    
     //get the current camera frame from the live AR session
-    if tempImage == nil { return }
+    if tempImage == nil {
+        return
+    }
+    
     let tempciImage = CIImage(cvPixelBuffer: tempImage!)
     
     // create a reqeust to the Vision Core ML Model
     let request = VNCoreMLRequest(model: mod) { (request, error) in }
+    
     //crop just the center of the captured camera frame to send to the ML model
-    request.imageCropAndScaleOption=VNImageCropAndScaleOption.centerCrop
+    request.imageCropAndScaleOption = .centerCrop
     
     // perform the request
-    let handler = VNImageRequestHandler(ciImage: tempciImage)
+    let handler = VNImageRequestHandler(ciImage: tempciImage, orientation: .right)
+    
+    
     do {
         //send the request to the model
         try handler.perform([request])
@@ -146,24 +147,20 @@ func continuouslyUpdate() {
         print(error)
     }
     
-    //process the result of the request
-    guard let results = request.results as? [VNClassificationObservation] else {
-        fatalError("model failed to process image")
-    }
-    //format the result into a string
-    firstResult = results.first.flatMap({ $0 as VNClassificationObservation })
-        .map({ "\($0.identifier)" })!
+    guard let observations = request.results as? [VNRecognizedObjectObservation] else { return}
     
-    // parse before comma
-    if let index = firstResult.firstIndex(of: ",") {
-        firstResult = String(firstResult.prefix(upTo: index))
-    }
-    
-    // if we found something new, set the recognized object
-    if !recogd.recognizedObject.elementsEqual(firstResult) {
-        DispatchQueue.main.async {
-            recogd.setRecognizedObject(newThing: firstResult)
+    for observation in observations {
+        
+        if observation.labels[0].confidence < 0.9 { continue }
+        
+        let topLabelObservation = observation.labels[0].identifier
+        
+        if !recogd.recognizedObject.elementsEqual(topLabelObservation) {
+            DispatchQueue.main.async {
+                recogd.setRecognizedObject(newThing: topLabelObservation)
+            }
         }
+        
     }
     
 }
