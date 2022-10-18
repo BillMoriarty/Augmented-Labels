@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Augmented Labels
 //
-//  Created by Bill Moriarty on 8/22/22.
+//  Created by Bill Moriarty on 10/12/22.
 //
 
 import SwiftUI
@@ -22,11 +22,11 @@ class ModelRecognizer: ObservableObject {
     @Published var recognizedObject = "nothing yet"
     
     // instantiate the core ML model
-    // I am using ! here because the model is required for this
-    @Published var model  = try! VNCoreMLModel(for: YOLOv3TinyFP16().model)
+    // I am using ! here because the model is required for this application to function q
+    @Published var model  = try! VNCoreMLModel(for: MobileNetV2().model)
     
     // call the continuouslyUpdate function every half second
-    var timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { _ in
+    var timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
         continuouslyUpdate()
     })
     
@@ -38,7 +38,10 @@ class ModelRecognizer: ObservableObject {
 struct ContentView : View {
     
     var body: some View {
-        return WrappingView()
+        VStack {
+            Text(verbatim: "Hold Your Phone In Portrait Mode")
+            WrappingView()
+        }
     }
 }
 
@@ -64,13 +67,13 @@ struct ARViewContainer: UIViewRepresentable {
     func updateUIView(_ uiView: ARView, context: Context) {
         var txt = SCNText()
         
-        // let's keep the number of anchors to no more than 3 for this demo just so the screen doesn't get cluttered
-        if recogd.aView.scene.anchors.count > 3 {
-            recogd.aView.scene.anchors.remove(at: 0)
+        // let's keep the number of anchors to no more than 1 for this demo
+        if recogd.aView.scene.anchors.count > 0 {
+            recogd.aView.scene.anchors.removeAll()
         }
         
         // create the AR Text to place on the screen
-        txt = SCNText(string: recogd.recognizedObject, extrusionDepth: 2)
+        txt = SCNText(string: recogd.recognizedObject, extrusionDepth: 1)
         let material = SCNMaterial()
         material.diffuse.contents = UIColor.magenta
         txt.materials = [material]
@@ -80,8 +83,8 @@ struct ARViewContainer: UIViewRepresentable {
         let shader = SimpleMaterial(color: randomColor, roughness: 1, isMetallic: true)
         let text = MeshResource.generateText(
             "\(recogd.recognizedObject)",
-            extrusionDepth: 0.08,
-            font: .systemFont(ofSize: 0.1, weight: .bold),
+            extrusionDepth: 0.05,
+            font: .init(name: "Helvetica", size: 0.05)!,
             alignment: .center
         )
         
@@ -89,10 +92,18 @@ struct ARViewContainer: UIViewRepresentable {
         
         let transform = recogd.aView.cameraTransform
         
-        // set the transform (the 3d location) of the text to be near the center of the camer, and 1 meter away
+        // set the transform (the 3d location) of the text to be near the center of the camera, and 1/2 meter away
         let trans = simd_float4x4(transform.matrix)
         let anchEntity = AnchorEntity(world: trans)
-        textEntity.position.z -= 1.0
+        textEntity.position.z -= 0.5 // place the text 1/2 meter away from the camera along the Z axis
+        
+        // find the width of the entity in order to have the text appear in the center
+        let minX = text.bounds.min.x
+        let maxX = text.bounds.max.x
+        let width = maxX - minX
+        let xPos = width / 2
+        
+        textEntity.position.x = transform.translation.x - xPos
         
         anchEntity.addChild(textEntity)
         
@@ -115,13 +126,14 @@ func continuouslyUpdate() {
     
     @ObservedObject var recogd: ModelRecognizer = .shared
     
-    // access what we need
+    // access what we need from the observed object
     let v = recogd.aView
     let sess = v.session
     let mod = recogd.model
     
     // access the current frame as an image
     let tempImage: CVPixelBuffer? = sess.currentFrame?.capturedImage
+    
     
     //get the current camera frame from the live AR session
     if tempImage == nil {
@@ -137,8 +149,7 @@ func continuouslyUpdate() {
     request.imageCropAndScaleOption = .centerCrop
     
     // perform the request
-    let handler = VNImageRequestHandler(ciImage: tempciImage, orientation: .right)
-    
+    let handler = VNImageRequestHandler(ciImage: tempciImage, orientation: .down) //left //right
     
     do {
         //send the request to the model
@@ -147,22 +158,23 @@ func continuouslyUpdate() {
         print(error)
     }
     
-    guard let observations = request.results as? [VNRecognizedObjectObservation] else { return}
+    guard let observations = request.results as? [VNClassificationObservation] else { return}
     
-    for observation in observations {
-        
-        if observation.labels[0].confidence < 0.9 { continue }
-        
-        let topLabelObservation = observation.labels[0].identifier
-        
-        if !recogd.recognizedObject.elementsEqual(topLabelObservation) {
-            DispatchQueue.main.async {
-                recogd.setRecognizedObject(newThing: topLabelObservation)
-            }
+    // only proceed if the model prediction's confidence in the first result is greater than 50%
+    if observations[0].confidence < 0.5  { return }
+    
+    // the model returns predictions in descending order of confidence
+    // we want to select the first prediction, which has the higest confidence
+    let topLabelObservation = observations[0].identifier
+    
+    // get just the first word from the prediction string
+    let firstWord = topLabelObservation.components(separatedBy: [","])[0]
+    
+    if recogd.recognizedObject != firstWord {
+        DispatchQueue.main.async {
+            recogd.setRecognizedObject(newThing: firstWord)
         }
-        
     }
-    
 }
 
 #if DEBUG

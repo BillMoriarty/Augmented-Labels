@@ -11,8 +11,7 @@
 		136A0F4A28B4499400A50369 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136A0F4928B4499400A50369 /* ContentView.swift */; };
 		136A0F4E28B4499700A50369 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 136A0F4D28B4499700A50369 /* Assets.xcassets */; };
 		136A0F5128B4499700A50369 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 136A0F5028B4499700A50369 /* Preview Assets.xcassets */; };
-		136A0F5828B44CA500A50369 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 136A0F5728B44CA500A50369 /* Resnet50.mlmodel */; };
-		13D624B828D937480043BCD1 /* YOLOv3TinyFP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 13D624B728D937480043BCD1 /* YOLOv3TinyFP16.mlmodel */; };
+		13D624BA28D9464C0043BCD1 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 13D624B928D9464C0043BCD1 /* MobileNetV2.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,8 +20,7 @@
 		136A0F4928B4499400A50369 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		136A0F4D28B4499700A50369 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		136A0F5028B4499700A50369 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		136A0F5728B44CA500A50369 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
-		13D624B728D937480043BCD1 /* YOLOv3TinyFP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3TinyFP16.mlmodel; sourceTree = "<group>"; };
+		13D624B928D9464C0043BCD1 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +53,7 @@
 		136A0F4628B4499400A50369 /* Augmented Labels */ = {
 			isa = PBXGroup;
 			children = (
-				136A0F5728B44CA500A50369 /* Resnet50.mlmodel */,
-				13D624B728D937480043BCD1 /* YOLOv3TinyFP16.mlmodel */,
+				13D624B928D9464C0043BCD1 /* MobileNetV2.mlmodel */,
 				136A0F4728B4499400A50369 /* AppDelegate.swift */,
 				136A0F4928B4499400A50369 /* ContentView.swift */,
 				136A0F4D28B4499700A50369 /* Assets.xcassets */,
@@ -89,6 +86,8 @@
 			dependencies = (
 			);
 			name = "Augmented Labels";
+			packageProductDependencies = (
+			);
 			productName = "Augmented Labels";
 			productReference = 136A0F4428B4499400A50369 /* Augmented Labels.app */;
 			productType = "com.apple.product-type.application";
@@ -117,6 +116,8 @@
 				Base,
 			);
 			mainGroup = 136A0F3B28B4499400A50369;
+			packageReferences = (
+			);
 			productRefGroup = 136A0F4528B4499400A50369 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -145,8 +146,7 @@
 			files = (
 				136A0F4A28B4499400A50369 /* ContentView.swift in Sources */,
 				136A0F4828B4499400A50369 /* AppDelegate.swift in Sources */,
-				136A0F5828B44CA500A50369 /* Resnet50.mlmodel in Sources */,
-				13D624B828D937480043BCD1 /* YOLOv3TinyFP16.mlmodel in Sources */,
+				13D624BA28D9464C0043BCD1 /* MobileNetV2.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,9 +282,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -295,7 +295,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -317,9 +317,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -330,7 +330,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
