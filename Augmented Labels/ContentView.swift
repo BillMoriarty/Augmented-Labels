@@ -149,7 +149,7 @@ func continuouslyUpdate() {
     request.imageCropAndScaleOption = .centerCrop
     
     // perform the request
-    let handler = VNImageRequestHandler(ciImage: tempciImage, orientation: .down) //left //right
+    let handler = VNImageRequestHandler(ciImage: tempciImage, orientation: .right)  
     
     do {
         //send the request to the model
